@@ -1,66 +1,45 @@
-## Foundry
+# ChainVerdict ⚖️
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
+**No middlemen. No delays. Just a verdict.**
 
-Foundry consists of:
+I built this for the Celo Build Agents for the Real World Hackathon V2 (March 2026). The idea is simple — freelance disputes are broken, especially in emerging markets. Escrow holds the money but someone still has to decide who gets it. ChainVerdict makes that someone an AI agent.
 
-- **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
-- **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
-- **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
-- **Chisel**: Fast, utilitarian, and verbose solidity REPL.
+## How it works
 
-## Documentation
+1. Client posts a job and locks cUSD in the escrow contract
+2. Freelancer does the work
+3. Dispute gets raised on-chain
+4. AI agent detects the event, reads the evidence, calls Gemini
+5. Verdict gets executed on-chain with full reasoning — automatically
 
-https://book.getfoundry.sh/
+## Contracts (Celo Mainnet)
 
-## Usage
+- **AgentEscrow:** `0x6188A95d23792045dcBE06f705E018a9d9Ed54A7`
+- **JudgeIdentity:** `0x26607DfD08EcCE91AaAb8ECde87a4eD5901A6DE7`
 
-### Build
+Both verified on Celoscan.
 
-```shell
-$ forge build
+## Stack
+
+- Solidity + Foundry + OpenZeppelin v5
+- Python + web3.py for the agent
+- Google Gemini for the AI reasoning
+- React frontend
+- Celo Mainnet, cUSD payments
+
+## Running it
+```bash
+# Contracts
+forge build
+
+# Agent
+cd agent && pip install -r requirements.txt
+python3 judge_agent.py
+
+# Frontend  
+cd frontend && npm install && npm start
 ```
 
-### Test
+## Why I built this
 
-```shell
-$ forge test
-```
-
-### Format
-
-```shell
-$ forge fmt
-```
-
-### Gas Snapshots
-
-```shell
-$ forge snapshot
-```
-
-### Anvil
-
-```shell
-$ anvil
-```
-
-### Deploy
-
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
-```
-
-### Cast
-
-```shell
-$ cast <subcommand>
-```
-
-### Help
-
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
-```
+ I know what it means when a $50 payment disappears and there's nothing you can do about it. ChainVerdict is the tool I wished existed.

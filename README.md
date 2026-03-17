@@ -1,6 +1,6 @@
 # ChainVerdict ⚖️
 
-**No middlemen. No delays. Just a verdict.**
+**No middlemen. No delays. Just a clear verdict.**
 
 I built this for the Celo Build Agents for the Real World Hackathon V2 (March 2026). The idea is simple — freelance disputes are broken, especially in emerging markets. Escrow holds the money but someone still has to decide who gets it. ChainVerdict makes that someone an AI agent.
 

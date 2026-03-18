@@ -23,9 +23,12 @@ Both verified on Celoscan.
 
 - Solidity + Foundry + OpenZeppelin v5
 - Python + web3.py for the agent
-- Google Gemini for the AI reasoning
+- **AI:** Claude (Anthropic) — claude-haiku-4-5
 - React frontend
 - Celo Mainnet, cUSD payments
+
+## 🎥 Demo
+[![ChainVerdict Demo](https://img.youtube.com/vi/AYlXIZzZg54/0.jpg)](https://youtu.be/AYlXIZzZg54)
 
 ## Running it
 ```bash

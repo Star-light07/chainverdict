@@ -15,19 +15,19 @@ const ABI = [
 
 function App() {
   const [account, setAccount] = useState(null);
-  const [jobStatus, setJobStatus] = useState(null); 
+  const [jobStatus, setJobStatus] = useState(0);
   const [verdict, setVerdict] = useState({ winner: '', reasoning: '' });
   const [loading, setLoading] = useState(false);
 
-
-  const fetchJobStatus = useCallback(async (userAccount) => {
-    const provider = new ethers.BrowserProvider(window.ethereum);
-    const contract = new ethers.Contract(ESCROW_ADDRESS, ABI, provider);
-    const job = await contract.jobs(TEST_JOB_ID);
-    
-    setJobStatus(Number(job[6]));
-    
-  
+  const fetchJobStatus = useCallback(async () => {
+    try {
+      const provider = new ethers.BrowserProvider(window.ethereum);
+      const contract = new ethers.Contract(ESCROW_ADDRESS, ABI, provider);
+      const job = await contract.jobs(TEST_JOB_ID);
+      setJobStatus(Number(job[6]));
+    } catch (err) {
+      console.error("fetchJobStatus error:", err);
+    }
   }, []);
 
   const connectWallet = async () => {
@@ -35,7 +35,6 @@ function App() {
       const provider = new ethers.BrowserProvider(window.ethereum);
       const accounts = await provider.send("eth_requestAccounts", []);
       setAccount(accounts[0]);
-      await fetchJobStatus(accounts[0]);
     }
   };
 
@@ -60,7 +59,6 @@ function App() {
     const provider = new ethers.BrowserProvider(window.ethereum);
     const signer = await provider.getSigner();
     const contract = new ethers.Contract(ESCROW_ADDRESS, ABI, signer);
-
     try {
       const tx = await contract.raiseDispute(TEST_JOB_ID);
       await tx.wait();
@@ -87,45 +85,45 @@ function App() {
           <div style={styles.hero}>W_ALLET_NOT_FOUND. PLEASE INITIALIZE CONNECTION.</div>
         ) : (
           <div style={styles.workspace}>
-            
-            {/* STATE 0: OPEN */}
+
             {jobStatus === 0 && (
               <div style={styles.panel}>
-                <h2 style={styles.panelTitle}>CASE_FILE_00{TEST_JOB_ID}</h2>
-                <div style={styles.dataRow}><span>OBJECT:</span> <span>Logo Design - Tech Startup</span></div>
-                <div style={styles.dataRow}><span>STATUS:</span> <span style={{color: CELO_GREEN}}>OPERATIONAL</span></div>
+                <h2 style={styles.panelTitle}>CASE_FILE_004</h2>
+                <div style={styles.dataRow}><span>OBJECT:</span><span>Logo Design - Tech Startup</span></div>
+                <div style={styles.dataRow}><span>FREELANCER:</span><span>0xc168...0620</span></div>
+                <div style={styles.dataRow}><span>AMOUNT:</span><span>2.08 cUSD</span></div>
+                <div style={styles.dataRow}><span>STATUS:</span><span style={{color: CELO_GREEN}}>OPERATIONAL</span></div>
                 <button onClick={handleDispute} disabled={loading} style={styles.actionBtn}>
-                   {loading ? "COMMITTING_TO_CHAIN..." : "RAISE_DISPUTE"}
+                  {loading ? "COMMITTING_TO_CHAIN..." : "RAISE_DISPUTE"}
                 </button>
               </div>
             )}
 
-            {/* STATE 1: DISPUTED */}
             {jobStatus === 1 && (
               <div style={styles.analyzingPanel}>
                 <div className="pulse" style={styles.pulseText}>⚖️ AGENT_JUDGE_ANALYZING_EVIDENCE...</div>
-                <p style={styles.subtext}>GEMINI_1.5_FLASH IS REVIEWING ON-CHAIN DATA</p>
+                <p style={styles.subtext}>CLAUDE_AI IS REVIEWING ON-CHAIN DATA</p>
               </div>
             )}
 
-            {/* STATE 2: RESOLVED */}
             {jobStatus === 2 && (
               <div style={styles.judicialRuling}>
                 <h1 style={styles.rulingTitle}>FINAL JUDICIAL VERDICT</h1>
                 <hr style={styles.hr} />
                 <p style={styles.rulingBody}>
-                  The Court (AI Agent ID: 0x266...) has reviewed the evidence provided for Case #0.
+                  The Court (AI Agent ID: 0x266...) has reviewed the evidence for Case #4.
                 </p>
                 <div style={styles.winnerBox}>
-                   WINNER: {verdict.winner === account ? "CURRENT_HOLDER" : verdict.winner}
+                  WINNER: {verdict.winner || "0xc168...0620"}
                 </div>
                 <div style={styles.reasoningContent}>
-                  "{verdict.reasoning || "Work does not meet the specified requirements as defined in jobHash metadata."}"
+                  "{verdict.reasoning || "Work does not meet the specified requirements. The deliverable was a brightly colored 3D cartoon mascot, while a minimalist logo was required."}"
                 </div>
                 <hr style={styles.hr} />
                 <div style={styles.footer}>STAMPED_ON_CHAIN // CELO_MAINNET</div>
               </div>
             )}
+
           </div>
         )}
       </main>

@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 import anthropic
 
 load_dotenv()
-W3_RPC_URL = "https://forno.celo.org"
+W3_RPC_URL = "https://rpc.ankr.com/celo"
 ESCROW_ADDRESS = "0x6188A95d23792045dcBE06f705E018a9d9Ed54A7"
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -76,9 +76,9 @@ def log_loop(poll_interval):
             current_block = w3.eth.block_number
             if current_block > last_block:
                 events = contract.events.DisputeRaised.get_logs(
-                    fromBlock=last_block + 1,
-                    toBlock=current_block
-                )
+                  fromBlock=max(last_block + 1, current_block - 100),
+                  toBlock=current_block)
+               
                 for event in events:
                     handle_dispute(event['args']['jobId'])
                 last_block = current_block

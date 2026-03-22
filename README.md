@@ -19,7 +19,7 @@ Freelance disputes are broken — especially in emerging markets. Escrow holds t
 - **AgentEscrow:** `0x6188A95d23792045dcBE06f705E018a9d9Ed54A7`
 - **JudgeIdentity:** `0x26607DfD08EcCE91AaAb8ECde87a4eD5901A6DE7`
 
-Both verified on Celoscan. Agent registered on Agentscan (Token ID #1985).
+Both verified on Celoscan. Agent registered on [Agentscan (Token ID #1985)](https://agentscan.info/agents/2c2fe62b-9a04-428f-8145-1d33d85e1bc0).
 
 ## Stack
 

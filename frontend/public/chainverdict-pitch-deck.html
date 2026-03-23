@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ChainVerdict — Pitch Deck</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink: #0A0A0F;
+    --gold: #D4AF37;
+    --gold-dim: #B8960A;
+    --amber: #F59E0B;
+    --off-white: #F5F0E8;
+    --muted: #8B8580;
+    --card-bg: #14141C;
+    --border: rgba(212,175,55,0.25);
+    --slide-w: 1200px;
+    --slide-h: 675px;
+  }
+
+  body {
+    background: #07070E;
+    font-family: 'DM Sans', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 20px;
+    gap: 16px;
+    min-height: 100vh;
+  }
+
+  .controls {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    background: rgba(10,10,15,0.92);
+    border: 1px solid var(--border);
+    border-radius: 40px;
+    padding: 10px 20px;
+    z-index: 1000;
+    backdrop-filter: blur(12px);
+  }
+  .controls button {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--gold);
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    padding: 6px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.08em;
+  }
+  .controls button:hover { background: var(--gold); color: var(--ink); }
+  .controls .slide-counter {
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    min-width: 60px;
+    text-align: center;
+  }
+
+  .slide-wrapper {
+    display: none;
+    width: 100%;
+    max-width: var(--slide-w);
+  }
+  .slide-wrapper.active { display: block; }
+
+  .slide {
+    width: 100%;
+    aspect-ratio: 16/9;
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px;
+    background: var(--ink);
+    box-shadow: 0 0 80px rgba(212,175,55,0.08), 0 40px 80px rgba(0,0,0,0.6);
+  }
+
+  /* ============= SLIDE 1: TITLE ============= */
+  .s1 {
+    background: #07070E;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .s1 .grid-bg {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(212,175,55,0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(212,175,55,0.06) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+  .s1 .glow {
+    position: absolute;
+    width: 600px;
+    height: 300px;
+    background: radial-gradient(ellipse, rgba(212,175,55,0.12) 0%, transparent 70%);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+  }
+  .s1-content {
+    position: relative;
+    text-align: center;
+    z-index: 2;
+  }
+  .tag {
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+    border: 1px solid var(--border);
+    padding: 5px 14px;
+    border-radius: 20px;
+    margin-bottom: 24px;
+    text-transform: uppercase;
+  }
+  .s1 h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(42px, 5.5vw, 72px);
+    font-weight: 800;
+    color: var(--off-white);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+  }
+  .s1 h1 span { color: var(--gold); }
+  .s1 .tagline {
+    margin-top: 18px;
+    font-size: clamp(14px, 1.6vw, 18px);
+    color: var(--muted);
+    font-weight: 300;
+    letter-spacing: 0.02em;
+    max-width: 560px;
+  }
+  .s1 .meta {
+    margin-top: 36px;
+    display: flex;
+    gap: 24px;
+    justify-content: center;
+    align-items: center;
+  }
+  .s1 .meta-item {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+  }
+  .s1 .meta-sep { color: var(--border); font-size: 18px; }
+  .s1 .live-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: #4ADE80;
+  }
+  .s1 .live-dot {
+    width: 7px; height: 7px;
+    background: #4ADE80;
+    border-radius: 50%;
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
+
+  /* ============= SHARED LAYOUT ============= */
+  .slide-inner {
+    position: absolute;
+    inset: 0;
+    padding: 5% 6%;
+    display: flex;
+    flex-direction: column;
+  }
+  .slide-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 5%;
+  }
+  .slide-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.15em;
+  }
+  .cv-logo {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: 0.1em;
+  }
+  h2.slide-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(20px, 2.8vw, 34px);
+    font-weight: 800;
+    color: var(--off-white);
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+  }
+  h2.slide-title span { color: var(--gold); }
+
+  /* Dark themed slides */
+  .dark-slide { background: #07070E; }
+  .dark-slide::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(212,175,55,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(212,175,55,0.04) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+  .dark-slide .slide-inner { position: relative; z-index: 1; }
+
+  /* Light themed slides */
+  .light-slide { background: var(--off-white); }
+  .light-slide h2.slide-title { color: var(--ink); }
+  .light-slide .slide-num { color: #999; }
+  .light-slide .cv-logo { color: var(--gold-dim); }
+
+  /* Cards */
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 4%;
+  }
+  .card-light {
+    background: white;
+    border: 1px solid rgba(0,0,0,0.08);
+    border-radius: 8px;
+    padding: 4%;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  }
+
+  /* Accent bar */
+  .accent-bar {
+    width: 36px;
+    height: 3px;
+    background: var(--gold);
+    margin-bottom: 12px;
+    border-radius: 2px;
+  }
+
+  /* ============= SLIDE 2: PROBLEM ============= */
+  .s2-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 3%;
+    flex: 1;
+  }
+  .pain-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 6% 5%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .pain-icon {
+    font-size: clamp(18px, 2.5vw, 28px);
+    margin-bottom: 4px;
+  }
+  .pain-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: clamp(12px, 1.3vw, 16px);
+    color: var(--off-white);
+  }
+  .pain-body {
+    font-size: clamp(10px, 1vw, 13px);
+    color: var(--muted);
+    line-height: 1.5;
+  }
+  .pain-stat {
+    font-family: 'DM Mono', monospace;
+    font-size: clamp(18px, 2vw, 28px);
+    font-weight: 500;
+    color: var(--gold);
+    margin-top: auto;
+  }
+
+  /* ============= SLIDE 3: SOLUTION ============= */
+  .flow-row {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    flex: 1;
+  }
+  .flow-step {
+    flex: 1;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 5%;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    position: relative;
+  }
+  .flow-step .step-icon { font-size: clamp(18px, 2.2vw, 26px); }
+  .flow-step .step-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--gold);
+    letter-spacing: 0.12em;
+  }
+  .flow-step .step-label {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(10px, 1.1vw, 13px);
+    font-weight: 700;
+    color: var(--off-white);
+  }
+  .flow-step .step-body {
+    font-size: clamp(9px, 0.9vw, 11px);
+    color: var(--muted);
+    line-height: 1.5;
+  }
+  .flow-arrow {
+    color: var(--gold);
+    font-size: clamp(14px, 1.8vw, 22px);
+    padding: 0 1%;
+    flex-shrink: 0;
+  }
+
+  /* ============= SLIDE 4: TECH ============= */
+  .tech-layout {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 4%;
+    flex: 1;
+  }
+  .tech-stack-list {
+    display: flex;
+    flex-direction: column;
+    gap: 3%;
+  }
+  .tech-row {
+    display: flex;
+    align-items: center;
+    gap: 3%;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 3% 4%;
+  }
+  .tech-badge {
+    background: rgba(212,175,55,0.12);
+    color: var(--gold);
+    font-family: 'DM Mono', monospace;
+    font-size: clamp(8px, 0.85vw, 10px);
+    padding: 3px 8px;
+    border-radius: 4px;
+    letter-spacing: 0.08em;
+    flex-shrink: 0;
+    min-width: 80px;
+    text-align: center;
+  }
+  .tech-desc {
+    font-size: clamp(9px, 0.95vw, 12px);
+    color: var(--muted);
+    line-height: 1.4;
+  }
+  .contract-box {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 5%;
+    display: flex;
+    flex-direction: column;
+    gap: 4%;
+  }
+  .contract-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--gold);
+    letter-spacing: 0.1em;
+    margin-bottom: 4px;
+  }
+  .contract-name {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(11px, 1.2vw, 15px);
+    font-weight: 700;
+    color: var(--off-white);
+    margin-bottom: 4px;
+  }
+  .contract-addr {
+    font-family: 'DM Mono', monospace;
+    font-size: clamp(7px, 0.75vw, 9px);
+    color: var(--muted);
+    word-break: break-all;
+    line-height: 1.6;
+  }
+  .contract-divider {
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* ============= SLIDE 5: DEMO ============= */
+  .demo-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4%;
+    flex: 1;
+  }
+  .demo-screen {
+    background: #0D0D12;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .demo-bar {
+    background: var(--card-bg);
+    padding: 2% 4%;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .dot-r { width: 8px; height: 8px; border-radius: 50%; background: #FF5F57; }
+  .dot-y { width: 8px; height: 8px; border-radius: 50%; background: #FEBC2E; }
+  .dot-g { width: 8px; height: 8px; border-radius: 50%; background: #28C840; }
+  .demo-url {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    color: var(--muted);
+    margin-left: 8px;
+  }
+  .demo-content { padding: 4%; flex: 1; }
+  .demo-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--gold);
+    letter-spacing: 0.1em;
+    margin-bottom: 8px;
+  }
+  .demo-verdict {
+    background: rgba(212,175,55,0.06);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 3% 4%;
+    margin-top: 4%;
+  }
+  .verdict-header {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(10px, 1.1vw, 13px);
+    font-weight: 700;
+    color: var(--gold);
+    margin-bottom: 4px;
+  }
+  .verdict-text {
+    font-size: clamp(8px, 0.85vw, 10px);
+    color: var(--muted);
+    line-height: 1.6;
+    font-family: 'DM Mono', monospace;
+  }
+  .feat-list { display: flex; flex-direction: column; gap: 4%; flex: 1; }
+  .feat-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 4%;
+    padding: 3% 4%;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+  }
+  .feat-check {
+    color: #4ADE80;
+    font-size: clamp(11px, 1.2vw, 15px);
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .feat-text { font-size: clamp(9px, 0.95vw, 12px); color: var(--muted); line-height: 1.4; }
+  .feat-text strong { color: var(--off-white); font-weight: 600; display: block; margin-bottom: 2px; }
+
+  /* ============= SLIDE 6: MARKET ============= */
+  .market-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 3%;
+    margin-bottom: 4%;
+  }
+  .stat-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 6% 5%;
+    text-align: center;
+  }
+  .stat-num {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(24px, 3vw, 38px);
+    font-weight: 800;
+    color: var(--gold);
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+  .stat-label {
+    font-size: clamp(9px, 0.95vw, 12px);
+    color: var(--muted);
+    line-height: 1.4;
+  }
+  .market-insight {
+    background: rgba(212,175,55,0.06);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 3% 4%;
+    display: flex;
+    gap: 3%;
+    align-items: flex-start;
+  }
+  .insight-icon { font-size: clamp(14px, 1.6vw, 20px); flex-shrink: 0; }
+  .insight-text {
+    font-size: clamp(9px, 0.95vw, 12px);
+    color: var(--muted);
+    line-height: 1.6;
+  }
+  .insight-text strong { color: var(--off-white); }
+
+  /* ============= SLIDE 7: ROADMAP ============= */
+  .roadmap-row {
+    display: flex;
+    gap: 3%;
+    flex: 1;
+  }
+  .phase-card {
+    flex: 1;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 5%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    position: relative;
+    overflow: hidden;
+  }
+  .phase-card.now {
+    border-color: var(--gold);
+    background: rgba(212,175,55,0.04);
+  }
+  .phase-card.now::before {
+    content: 'NOW';
+    position: absolute;
+    top: 10px; right: 10px;
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    color: var(--gold);
+    letter-spacing: 0.15em;
+    background: rgba(212,175,55,0.12);
+    padding: 2px 6px;
+    border-radius: 10px;
+  }
+  .phase-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--gold);
+    letter-spacing: 0.1em;
+  }
+  .phase-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(11px, 1.2vw, 15px);
+    font-weight: 700;
+    color: var(--off-white);
+  }
+  .phase-items { display: flex; flex-direction: column; gap: 6px; margin-top: 4px; }
+  .phase-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: clamp(8px, 0.85vw, 11px);
+    color: var(--muted);
+    line-height: 1.4;
+  }
+  .phase-bullet { color: var(--gold); flex-shrink: 0; }
+
+  /* ============= SLIDE 8: CLOSING ============= */
+  .s8 {
+    background: #07070E;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+  .s8 .grid-bg {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(212,175,55,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(212,175,55,0.05) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+  .s8-inner {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    padding: 5%;
+  }
+  .s8 h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(28px, 4vw, 52px);
+    font-weight: 800;
+    color: var(--off-white);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+  .s8 h2 span { color: var(--gold); }
+  .s8 .sub {
+    font-size: clamp(12px, 1.3vw, 16px);
+    color: var(--muted);
+    max-width: 560px;
+    line-height: 1.6;
+  }
+  .links-row {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 8px;
+  }
+  .link-pill {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--gold);
+    border: 1px solid var(--border);
+    padding: 6px 14px;
+    border-radius: 20px;
+    letter-spacing: 0.06em;
+  }
+  .big-stat-row {
+    display: flex;
+    gap: 36px;
+    margin-top: 8px;
+  }
+  .big-stat { text-align: center; }
+  .big-stat .num {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(20px, 2.5vw, 32px);
+    font-weight: 800;
+    color: var(--gold);
+  }
+  .big-stat .lbl {
+    font-size: clamp(9px, 0.9vw, 11px);
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.08em;
+  }
+</style>
+</head>
+<body>
+
+<!-- ====== SLIDE 1: TITLE ====== -->
+<div class="slide-wrapper active" id="slide-1">
+  <div class="slide s1">
+    <div class="grid-bg"></div>
+    <div class="glow"></div>
+    <div class="s1-content">
+      <div class="tag">Celo · Build Agents for the Real World V2</div>
+      <h1>Chain<span>Verdict</span></h1>
+      <div class="tagline">The AI-powered on-chain judge for freelance disputes.<br>No lawyers. No delays. No trust required.</div>
+      <div class="meta">
+        <div class="meta-item">SOLIDITY · PYTHON · REACT</div>
+        <div class="meta-sep">·</div>
+        <div class="meta-item">CELO MAINNET</div>
+        <div class="meta-sep">·</div>
+        <div class="live-badge"><div class="live-dot"></div> LIVE ON-CHAIN</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== SLIDE 2: PROBLEM ====== -->
+<div class="slide-wrapper" id="slide-2">
+  <div class="slide dark-slide">
+    <div class="slide-inner">
+      <div class="slide-header">
+        <div>
+          <div class="slide-num">02 / 08 — THE PROBLEM</div>
+          <div style="height:12px"></div>
+          <h2 class="slide-title">Freelance work runs on trust.<br><span>Trust doesn't scale.</span></h2>
+        </div>
+        <div class="cv-logo">CV</div>
+      </div>
+      <div class="s2-grid">
+        <div class="pain-card">
+          <div class="pain-icon">⚖️</div>
+          <div class="pain-title">No Neutral Arbiter</div>
+          <div class="pain-body">Platforms side with clients by default. Freelancers lose income with no recourse or appeal.</div>
+          <div class="pain-stat">~$2B+</div>
+          <div style="font-size:10px;color:var(--muted);font-family:'DM Mono',monospace">disputed yearly</div>
+        </div>
+        <div class="pain-card">
+          <div class="pain-icon">🕰️</div>
+          <div class="pain-title">Slow Resolution</div>
+          <div class="pain-body">Human arbitration takes weeks or months. Freelancers wait for money they already earned.</div>
+          <div class="pain-stat">14–90</div>
+          <div style="font-size:10px;color:var(--muted);font-family:'DM Mono',monospace">days to resolve</div>
+        </div>
+        <div class="pain-card">
+          <div class="pain-icon">🌍</div>
+          <div class="pain-title">Global, Unprotected</div>
+          <div class="pain-body">1.5B gig workers globally. Cross-border disputes have zero legal framework.</div>
+          <div class="pain-stat">1.5B</div>
+          <div style="font-size:10px;color:var(--muted);font-family:'DM Mono',monospace">gig workers worldwide</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== SLIDE 3: SOLUTION ====== -->
+<div class="slide-wrapper" id="slide-3">
+  <div class="slide dark-slide">
+    <div class="slide-inner">
+      <div class="slide-header">
+        <div>
+          <div class="slide-num">03 / 08 — THE SOLUTION</div>
+          <div style="height:12px"></div>
+          <h2 class="slide-title">An AI judge that lives<br><span>entirely on-chain.</span></h2>
+        </div>
+        <div class="cv-logo">CV</div>
+      </div>
+      <div class="flow-row">
+        <div class="flow-step">
+          <div class="step-icon">💰</div>
+          <div class="step-num">STEP 01</div>
+          <div class="step-label">Lock Funds</div>
+          <div class="step-body">Client deposits cUSD into AgentEscrow smart contract. Funds held trustlessly on Celo Mainnet.</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">
+          <div class="step-icon">📋</div>
+          <div class="step-num">STEP 02</div>
+          <div class="step-label">Raise Dispute</div>
+          <div class="step-body">Either party submits evidence hash on-chain. Contract emits event. Agent detects within seconds.</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">
+          <div class="step-icon">🤖</div>
+          <div class="step-num">STEP 03</div>
+          <div class="step-label">AI Reads Evidence</div>
+          <div class="step-body">Claude agent reads jobHash from chain, analyzes context with structured reasoning. No human input.</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">
+          <div class="step-icon">⚡</div>
+          <div class="step-num">STEP 04</div>
+          <div class="step-label">Verdict Executed</div>
+          <div class="step-body">Agent signs and submits verdict tx on-chain. Funds released automatically. Full audit trail.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== SLIDE 4: TECH STACK ====== -->
+<div class="slide-wrapper" id="slide-4">
+  <div class="slide dark-slide">
+    <div class="slide-inner">
+      <div class="slide-header">
+        <div>
+          <div class="slide-num">04 / 08 — ARCHITECTURE</div>
+          <div style="height:12px"></div>
+          <h2 class="slide-title">Production-grade stack.<br><span>Real mainnet contracts.</span></h2>
+        </div>
+        <div class="cv-logo">CV</div>
+      </div>
+      <div class="tech-layout">
+        <div class="tech-stack-list">
+          <div class="tech-row">
+            <div class="tech-badge">SOLIDITY</div>
+            <div class="tech-desc">AgentEscrow + JudgeIdentity — deployed to Celo Mainnet via Foundry. Verified on Celoscan.</div>
+          </div>
+          <div class="tech-row">
+            <div class="tech-badge">PYTHON</div>
+            <div class="tech-desc">Autonomous judge agent using web3.py. Auto-polls for DisputeRaised events. Signs verdicts.</div>
+          </div>
+          <div class="tech-row">
+            <div class="tech-badge">CLAUDE API</div>
+            <div class="tech-desc">claude-haiku-4-5 for fast, cheap, structured legal reasoning. Reads on-chain evidence hash.</div>
+          </div>
+          <div class="tech-row">
+            <div class="tech-badge">REACT</div>
+            <div class="tech-desc">Frontend via ethers.js. Live Celoscan tx links. Verdict history. Auto-refreshing verdict card.</div>
+          </div>
+          <div class="tech-row">
+            <div class="tech-badge">ERC-8004</div>
+            <div class="tech-desc">Agent registered on Agentscan as Token #1985. Full identity + capability declaration.</div>
+          </div>
+        </div>
+        <div class="contract-box">
+          <div>
+            <div class="contract-label">CONTRACT 01</div>
+            <div class="contract-name">AgentEscrow.sol</div>
+            <div class="contract-addr">0x6188A95d23792045dcBE06f705E018a9d9Ed54A7</div>
+          </div>
+          <div class="contract-divider"></div>
+          <div>
+            <div class="contract-label">CONTRACT 02</div>
+            <div class="contract-name">JudgeIdentity.sol</div>
+            <div class="contract-addr">0x26607DfD08EcCE91AaAb8ECde87a4eD5901A6DE7</div>
+          </div>
+          <div class="contract-divider"></div>
+          <div>
+            <div class="contract-label">NETWORK</div>
+            <div class="contract-name">Celo Mainnet</div>
+            <div class="contract-addr">ankr RPC · Chain ID 42220</div>
+          </div>
+          <div class="contract-divider"></div>
+          <div>
+            <div class="contract-label">AGENT</div>
+            <div class="contract-name">Agentscan #1985</div>
+            <div class="contract-addr">2c2fe62b-9a04-428f-8145-1d33d85e1bc0</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== SLIDE 5: DEMO / WHAT'S WORKING ====== -->
+<div class="slide-wrapper" id="slide-5">
+  <div class="slide dark-slide">
+    <div class="slide-inner">
+      <div class="slide-header">
+        <div>
+          <div class="slide-num">05 / 08 — LIVE DEMO</div>
+          <div style="height:12px"></div>
+          <h2 class="slide-title">End-to-end flow.<br><span>Live on mainnet. Today.</span></h2>
+        </div>
+        <div class="cv-logo">CV</div>
+      </div>
+      <div class="demo-layout">
+        <div class="demo-screen">
+          <div class="demo-bar">
+            <div class="dot-r"></div><div class="dot-y"></div><div class="dot-g"></div>
+            <div class="demo-url">chainverdict.vercel.app</div>
+          </div>
+          <div class="demo-content">
+            <div class="demo-label">LIVE VERDICT OUTPUT</div>
+            <div style="font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;line-height:1.5">
+              Job #10 · DisputeRaised detected<br>
+              Agent polling... event found ✓<br>
+              Reading jobHash from chain...<br>
+              Sending to Claude for analysis...<br>
+              Verdict generated in 1.2s
+            </div>
+            <div class="demo-verdict">
+              <div class="verdict-header">⚖️ VERDICT: FREELANCER WINS</div>
+              <div class="verdict-text">
+                Based on the submitted evidence, the deliverable meets the specifications defined in the job description. Client failed to provide specific feedback within the agreed window. Award: full escrow released to freelancer.
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="feat-list">
+          <div class="feat-item">
+            <div class="feat-check">✓</div>
+            <div class="feat-text"><strong>Auto-polling verdict</strong>No manual refresh. Agent detects events in real-time and responds.</div>
+          </div>
+          <div class="feat-item">
+            <div class="feat-check">✓</div>
+            <div class="feat-text"><strong>Dynamic evidence reading</strong>Agent reads jobHash from chain — not hardcoded. Fully autonomous.</div>
+          </div>
+          <div class="feat-item">
+            <div class="feat-check">✓</div>
+            <div class="feat-text"><strong>Celoscan tx links</strong>Every verdict card links to live Celoscan transaction. Full transparency.</div>
+          </div>
+          <div class="feat-item">
+            <div class="feat-check">✓</div>
+            <div class="feat-text"><strong>ERC-8004 registered</strong>Agent has on-chain identity. Verifiable, traceable, auditable.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== SLIDE 6: MARKET ====== -->
+<div class="slide-wrapper" id="slide-6">
+  <div class="slide dark-slide">
+    <div class="slide-inner">
+      <div class="slide-header">
+        <div>
+          <div class="slide-num">06 / 08 — MARKET OPPORTUNITY</div>
+          <div style="height:12px"></div>
+          <h2 class="slide-title">A $455B market with<br><span>zero trustless arbitration.</span></h2>
+        </div>
+        <div class="cv-logo">CV</div>
+      </div>
+      <div class="market-grid">
+        <div class="stat-card">
+          <div class="stat-num">$455B</div>
+          <div class="stat-label">Global gig economy market size by 2027</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">1.5B</div>
+          <div class="stat-label">Gig workers worldwide with no dispute protection</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">~$2B+</div>
+          <div class="stat-label">Estimated freelance earnings disputed annually</div>
+        </div>
+      </div>
+      <div class="market-insight">
+        <div class="insight-icon">🎯</div>
+        <div class="insight-text">
+          <strong>ChainVerdict's position:</strong> The only protocol combining autonomous AI reasoning with on-chain execution for dispute resolution. Existing solutions (Kleros, Aragon Court) rely on token-weighted human voting — slow, gameable, costly. ChainVerdict is instant, deterministic, and verifiable. Built on Celo — optimized for Africa and emerging markets where freelance disputes have no recourse today.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== SLIDE 7: ROADMAP ====== -->
+<div class="slide-wrapper" id="slide-7">
+  <div class="slide dark-slide">
+    <div class="slide-inner">
+      <div class="slide-header">
+        <div>
+          <div class="slide-num">07 / 08 — ROADMAP</div>
+          <div style="height:12px"></div>
+          <h2 class="slide-title">From hackathon prototype<br><span>to production protocol.</span></h2>
+        </div>
+        <div class="cv-logo">CV</div>
+      </div>
+      <div class="roadmap-row">
+        <div class="phase-card now">
+          <div class="phase-label">PHASE 1 · Q1 2026</div>
+          <div class="phase-title">Hackathon MVP</div>
+          <div class="phase-items">
+            <div class="phase-item"><div class="phase-bullet">▸</div>Two contracts on Celo Mainnet</div>
+            <div class="phase-item"><div class="phase-bullet">▸</div>Autonomous Python judge agent</div>
+            <div class="phase-item"><div class="phase-bullet">▸</div>React frontend + Vercel deploy</div>
+            <div class="phase-item"><div class="phase-bullet">▸</div>ERC-8004 registration on Agentscan</div>
+          </div>
+        </div>
+        <div class="phase-card">
+          <div class="phase-label">PHASE 2 · Q2 2026</div>
+          <div class="phase-title">Production Protocol</div>
+          <div class="phase-items">
+            <div class="phase-item"><div class="phase-bullet">▸</div>Multi-evidence type support (IPFS)</div>
+            <div class="phase-item"><div class="phase-bullet">▸</div>Appeal mechanism + human override</div>
+            <div class="phase-item"><div class="phase-bullet">▸</div>Protocol fee model (0.5% per case)</div>
+            <div class="phase-item"><div class="phase-bullet">▸</div>SDK for third-party platform integration</div>
+          </div>
+        </div>
+        <div class="phase-card">
+          <div class="phase-label">PHASE 3 · Q3–Q4 2026</div>
+          <div class="phase-title">Ecosystem Scale</div>
+          <div class="phase-items">
+            <div class="phase-item"><div class="phase-bullet">▸</div>Integrations with major freelance platforms</div>
+            <div class="phase-item"><div class="phase-bullet">▸</div>Cross-chain deployment (Base, Arbitrum)</div>
+            <div class="phase-item"><div class="phase-bullet">▸</div>DAO governance for verdict appeals</div>
+            <div class="phase-item"><div class="phase-bullet">▸</div>Mobile-first UX for emerging markets</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== SLIDE 8: CLOSING ====== -->
+<div class="slide-wrapper" id="slide-8">
+  <div class="slide s8">
+    <div class="grid-bg"></div>
+    <div class="s8-inner">
+      <div class="tag">Celo Hackathon 2026</div>
+      <h2>Justice should be<br><span>trustless.</span></h2>
+      <div class="sub">ChainVerdict is live on Celo Mainnet. The contracts are deployed. The agent is running. The verdict is already on-chain.</div>
+      <div class="big-stat-row">
+        <div class="big-stat"><div class="num">2</div><div class="lbl">CONTRACTS DEPLOYED</div></div>
+        <div class="big-stat"><div class="num">100%</div><div class="lbl">AUTONOMOUS AGENT</div></div>
+        <div class="big-stat"><div class="num">&lt;2s</div><div class="lbl">VERDICT SPEED</div></div>
+      </div>
+      <div class="links-row">
+        <div class="link-pill">github.com/Star-light07/chainverdict</div>
+        <div class="link-pill">youtu.be/LL-5ZZDQDeQ</div>
+        <div class="link-pill">karmahq.xyz/project/chainverdict</div>
+        <div class="link-pill">agentscan #1985</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Controls -->
+<div class="controls">
+  <button onclick="prev()">← PREV</button>
+  <div class="slide-counter" id="counter">1 / 8</div>
+  <button onclick="next()">NEXT →</button>
+</div>
+
+<script>
+  let current = 1;
+  const total = 8;
+
+  function show(n) {
+    document.querySelector('.slide-wrapper.active')?.classList.remove('active');
+    document.getElementById('slide-' + n)?.classList.add('active');
+    document.getElementById('counter').textContent = n + ' / ' + total;
+    current = n;
+  }
+
+  function next() { if (current < total) show(current + 1); }
+  function prev() { if (current > 1) show(current - 1); }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') next();
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') prev();
+  });
+</script>
+</body>
+</html>
